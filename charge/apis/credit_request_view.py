@@ -26,14 +26,14 @@ class CreditRequestAPIView(APIView):
                 raise CustomValidationException(
                     detail={'message': "پروفایل یافت نشد"}, status_code=status.HTTP_404_NOT_FOUND)
             
-            credit_request_object = CreditRequest.objects.filter(seller_profile=seller_profile,
-                                         status__in=[CreditRequest.ACCEPTED, CreditRequest.PENDING]
-                                         ).first()
+            # credit_request_object = CreditRequest.objects.filter(seller_profile=seller_profile,
+            #                              status__in=[CreditRequest.ACCEPTED, CreditRequest.PENDING]
+            #                              ).first()
             
-            print("credit_request_object: ", credit_request_object)
-            if credit_request_object:
-                raise CustomValidationException(
-                    detail={'message': "شما قبلا درخواست ثبت کردید"}, status_code=status.HTTP_400_BAD_REQUEST)
+            # print("credit_request_object: ", credit_request_object)
+            # if credit_request_object:
+            #     raise CustomValidationException(
+            #         detail={'message': "شما قبلا درخواست ثبت کردید"}, status_code=status.HTTP_400_BAD_REQUEST)
 
             # TODO: Check
             return data
