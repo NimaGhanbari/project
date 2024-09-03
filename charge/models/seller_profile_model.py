@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 
+from charge.utils.http_exception import CustomValidationException
+from rest_framework import status
 
 class SellerProfile(models.Model):
     is_active = models.BooleanField(default=True)
@@ -20,3 +22,10 @@ class SellerProfile(models.Model):
     
     def __str__(self) -> str:
         return str(self.user.username)
+    
+    def reduce_inventory(self, amount):
+        if self.inventory < amount:
+            raise CustomValidationException(
+                detail={'message': "عدم موجودی"}, status_code=status.HTTP_400_BAD_REQUEST)
+        self.inventory -= amount
+        self.save()

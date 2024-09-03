@@ -1,4 +1,5 @@
 from charge.models.phone_number_model import PhoneNumber
+from charge.utils.calculate_expected_inventory import calculate_expected_inventory
 from django_project.celery import app
 from charge.models.transactions_model import Transaction
 from charge.models.seller_profile_model import SellerProfile
@@ -7,34 +8,25 @@ import logging
 from charge.utils.http_exception import CustomValidationException
 from rest_framework import status
 from celery import shared_task
-
+import time
 @app.task()
 def process_recharge_task(transaction_id):
-    
+
     try:
         with transaction.atomic():
             transaction_object = Transaction.objects.select_for_update().get(id=transaction_id)
             seller_profile = SellerProfile.objects.select_for_update().get(
                 id=transaction_object.seller_profile.id)
-            phone_number = PhoneNumber.objects.select_for_update().get(
-                id=transaction_object.phone_number.id)
-
-            if seller_profile.inventory < transaction_object.charge_amount:
-                out_of_stock = True
-                raise Exception
+            phone_number = PhoneNumber.objects.get(id=transaction_object.phone_number.id)
+            seller_profile.reduce_inventory(transaction_object.charge_amount)
+            phone_number.increase_inventory(transaction_object.charge_amount)
             
-            seller_profile.inventory -= transaction_object.charge_amount
-            seller_profile.save()
-            phone_number.inventory += transaction_object.charge_amount
-            phone_number.save()
             transaction_object.status = Transaction.SUCCEEDED
             transaction_object.save()
+            assert seller_profile.inventory == calculate_expected_inventory(seller_profile.id), "Inventory check failed!"
     except Exception as e:
         logging.error(f"ERROR: {e}")
         transaction_object.status = Transaction.FAILED
         transaction_object.save()
-        if out_of_stock:
-            raise CustomValidationException(
-                detail={'message': "عدم موجودی"}, status_code=status.HTTP_400_BAD_REQUEST)
         raise CustomValidationException(
             detail={'message': "عملیات ناموفق"}, status_code=status.HTTP_400_BAD_REQUEST)

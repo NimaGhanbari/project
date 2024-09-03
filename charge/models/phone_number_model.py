@@ -15,3 +15,7 @@ class PhoneNumber(models.Model):
         
     def __str__(self) -> str:
         return str(self.phone_number) +"-"+ str(self.inventory)
+    
+    def increase_inventory(self, amount):
+        self.inventory += amount
+        self.save()

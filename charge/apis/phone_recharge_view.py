@@ -13,6 +13,7 @@ from charge.tasks import process_recharge_task
 from charge.utils.http_exception import CustomValidationException
 import logging
 import json
+from celery.result import AsyncResult
 
 class PhoneRechargeAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -59,16 +60,23 @@ class PhoneRechargeAPIView(APIView):
         serialized_data.is_valid(raise_exception=True)
         transaction_object = serialized_data.save()
         print("transaction_object:", transaction_object)
-        result = process_recharge_task.delay(transaction_object.id)
-        while True:
-            if result.ready():
-                break
-            time.sleep(0.5)
-        
-        if result.state == 'SUCCESS':
+        task = process_recharge_task.delay(transaction_object.id)
+        return Response({"task": task.id}, status=status.HTTP_202_ACCEPTED)
+
+
+class PhoneRechargeStatusAPIView(APIView):
+    
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request,task_id):
+        task_result = AsyncResult(str(task_id))
+
+        if task_result.state == 'PENDING':
+            return Response({"message": "عملیات در حال انجام است."}, status=status.HTTP_202_ACCEPTED)
+        elif task_result.state == 'SUCCESS':
             return Response({"message": "عملیات موفق"}, status=status.HTTP_200_OK)
-        elif result.state == 'FAILURE':
-            return Response({"message": "عملیات نا موفق"}, status=status.HTTP_400_BAD_REQUEST)
+        elif task_result.state == 'FAILURE':
+            return Response({"message": "عملیات ناموفق"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"message": "وضعیت نامشخص"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+    
