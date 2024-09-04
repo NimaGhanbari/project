@@ -27,7 +27,7 @@ class PhoneRechargeAPIView(APIView):
             ]
 
         def to_internal_value(self, data):
-            if "phone_number" not in data and not data["phone_number"]:
+            if "phone_number" not in data or not data["phone_number"]:
                 raise CustomValidationException(
                     detail={'message': "شماره تلفن مورد نظر را وارد کنید"}, status_code=status.HTTP_400_BAD_REQUEST)
             phone_number_object = PhoneNumber.objects.filter(
@@ -59,9 +59,9 @@ class PhoneRechargeAPIView(APIView):
             data=request.data, context={"request": request})
         serialized_data.is_valid(raise_exception=True)
         transaction_object = serialized_data.save()
-        print("transaction_object:", transaction_object)
         task = process_recharge_task.delay(transaction_object.id)
-        return Response({"task": task.id}, status=status.HTTP_202_ACCEPTED)
+        return Response({"message":"عملیات در حال پردازش است",
+                         "task": task.id}, status=status.HTTP_202_ACCEPTED)
 
 
 class PhoneRechargeStatusAPIView(APIView):
