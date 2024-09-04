@@ -11,7 +11,7 @@ class CreditRequestAdmin(admin.ModelAdmin):
     list_display = ["id","seller_profile","charge_amount","status","created_at"]
     search_fields = ["seller_profile__phone_number"]
     list_filter = ["status"]
-    readonly_fields =["seller_profile","charge_amount"]
+    readonly_fields =["seller_profile","charge_amount","previously_used"]
     list_editable = ["status"]
     
     
@@ -21,7 +21,7 @@ class PhoneNumberAdmin(admin.ModelAdmin):
     model=PhoneNumber
     list_display = ["id","name","phone_number","inventory"]
     search_fields = ["phone_number"]
-
+    readonly_fields =["inventory"]
 
 
 @admin.register(SellerProfile)

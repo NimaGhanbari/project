@@ -21,11 +21,5 @@ class SellerProfile(models.Model):
         verbose_name_plural = "Profiles"
     
     def __str__(self) -> str:
-        return str(self.user.username)
+        return str(self.user.username) +"-"+ str(self.inventory)
     
-    def reduce_inventory(self, amount):
-        if self.inventory < amount:
-            raise CustomValidationException(
-                detail={'message': "عدم موجودی"}, status_code=status.HTTP_400_BAD_REQUEST)
-        self.inventory -= amount
-        self.save()

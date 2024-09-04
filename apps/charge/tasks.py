@@ -1,4 +1,5 @@
 from apps.charge.models.phone_number_model import PhoneNumber
+from apps.charge.services.charge_transfer_service import transfer_service
 from apps.charge.utils.calculate_expected_inventory import calculate_expected_inventory
 from charge_hub_project.celery import app
 from apps.charge.models.transactions_model import Transaction
@@ -19,13 +20,15 @@ def process_recharge_task(transaction_id):
             transaction_object = Transaction.objects.select_for_update().get(id=transaction_id)
             seller_profile = SellerProfile.objects.select_for_update().get(
                 id=transaction_object.seller_profile.id)
-            phone_number = PhoneNumber.objects.get(id=transaction_object.phone_number.id)
-            seller_profile.reduce_inventory(transaction_object.charge_amount)
-            phone_number.increase_inventory(transaction_object.charge_amount)
-            
+            phone_number = PhoneNumber.objects.get(
+                id=transaction_object.phone_number.id)
+            transfer_service(charge_amount=transaction_object.charge_amount,
+                             seller_profile=seller_profile, phone_number=phone_number)
+
             transaction_object.status = Transaction.SUCCEEDED
             transaction_object.save()
-            assert seller_profile.inventory == calculate_expected_inventory(seller_profile.id), "Inventory check failed!"
+            assert seller_profile.inventory == calculate_expected_inventory(
+                seller_profile.id), "Inventory check failed!"
     except Exception as e:
         logging.error(f"ERROR: {e}")
         transaction_object.status = Transaction.FAILED
