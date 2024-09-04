@@ -14,6 +14,8 @@ from charge.utils.http_exception import CustomValidationException
 import logging
 import json
 from celery.result import AsyncResult
+from logging import getLogger
+logger = getLogger(__name__)
 
 class PhoneRechargeAPIView(APIView):
     permission_classes = [IsAuthenticated]
