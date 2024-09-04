@@ -30,5 +30,4 @@ def process_recharge_task(transaction_id):
         logging.error(f"ERROR: {e}")
         transaction_object.status = Transaction.FAILED
         transaction_object.save()
-        raise CustomValidationException(
-            detail={'message': "عملیات ناموفق"}, status_code=status.HTTP_400_BAD_REQUEST)
+        raise e
