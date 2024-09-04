@@ -1,6 +1,6 @@
 from charge.models.phone_number_model import PhoneNumber
 from charge.utils.calculate_expected_inventory import calculate_expected_inventory
-from django_project.celery import app
+from charge_hub_project.celery import app
 from charge.models.transactions_model import Transaction
 from charge.models.seller_profile_model import SellerProfile
 from django.db import transaction
