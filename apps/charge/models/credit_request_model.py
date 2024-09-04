@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from charge.models.seller_profile_model import SellerProfile
+from apps.charge.models.seller_profile_model import SellerProfile
 from django.core.validators import MinValueValidator
 
 class CreditRequest(models.Model):

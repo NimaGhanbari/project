@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 
-from charge.utils.http_exception import CustomValidationException
+from apps.charge.utils.http_exception import CustomValidationException
 from rest_framework import status
 
 class SellerProfile(models.Model):

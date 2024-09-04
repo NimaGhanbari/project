@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
-from charge.models.phone_number_model import PhoneNumber
-from charge.models.seller_profile_model import SellerProfile
+from apps.charge.models.phone_number_model import PhoneNumber
+from apps.charge.models.seller_profile_model import SellerProfile
 
 
 class Transaction(models.Model):

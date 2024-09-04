@@ -1,6 +1,6 @@
 
-from charge.models.credit_request_model import CreditRequest
-from charge.models.transactions_model import Transaction
+from apps.charge.models.credit_request_model import CreditRequest
+from apps.charge.models.transactions_model import Transaction
 
 
 def calculate_expected_inventory(seller_profile_id):

@@ -1,8 +1,8 @@
 from django.contrib import admin
-from charge.models.credit_request_model import CreditRequest
-from charge.models.phone_number_model import PhoneNumber
-from charge.models.seller_profile_model import SellerProfile
-from charge.models.transactions_model import Transaction
+from apps.charge.models.credit_request_model import CreditRequest
+from apps.charge.models.phone_number_model import PhoneNumber
+from apps.charge.models.seller_profile_model import SellerProfile
+from apps.charge.models.transactions_model import Transaction
 
 
 @admin.register(CreditRequest)

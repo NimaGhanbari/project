@@ -1,8 +1,8 @@
 
 from django.db.models.signals import post_save,pre_save
 from django.dispatch import receiver
-from charge.models.credit_request_model import CreditRequest
-from charge.models.seller_profile_model import SellerProfile
+from apps.charge.models.credit_request_model import CreditRequest
+from apps.charge.models.seller_profile_model import SellerProfile
 from django.db import transaction
 import logging
 

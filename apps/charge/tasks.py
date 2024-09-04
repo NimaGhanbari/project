@@ -1,11 +1,11 @@
-from charge.models.phone_number_model import PhoneNumber
-from charge.utils.calculate_expected_inventory import calculate_expected_inventory
+from apps.charge.models.phone_number_model import PhoneNumber
+from apps.charge.utils.calculate_expected_inventory import calculate_expected_inventory
 from charge_hub_project.celery import app
-from charge.models.transactions_model import Transaction
-from charge.models.seller_profile_model import SellerProfile
+from apps.charge.models.transactions_model import Transaction
+from apps.charge.models.seller_profile_model import SellerProfile
 from django.db import transaction
 import logging
-from charge.utils.http_exception import CustomValidationException
+from apps.charge.utils.http_exception import CustomValidationException
 from rest_framework import status
 from celery import shared_task
 import time
