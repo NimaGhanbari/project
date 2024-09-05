@@ -1,7 +1,5 @@
+from django.urls import path
 
-
-from django.contrib import admin
-from django.urls import path,include
 from apps.charge.apis.credit_request_view import CreditRequestAPIView
 from apps.charge.apis.phone_recharge_view import PhoneRechargeAPIView, PhoneRechargeStatusAPIView
 

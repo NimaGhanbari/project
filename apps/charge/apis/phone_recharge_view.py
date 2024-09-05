@@ -2,19 +2,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework import serializers
-import time
-from django.db import transaction
-from apps.charge.models.credit_request_model import CreditRequest
-from apps.charge.models.phone_number_model import PhoneNumber
-from apps.charge.models.seller_profile_model import SellerProfile
-from apps.charge.models.transactions_model import Transaction
+
 from apps.charge.serializers.phone_rechrge_serializer import PhoneRechargeSerializer
 from apps.charge.tasks import process_recharge_task
-from apps.charge.utils.http_exception import CustomValidationException
-import logging
-import json
+
 from celery.result import AsyncResult
+
 from logging import getLogger
 logger = getLogger(__name__)
 

@@ -1,10 +1,10 @@
 
 from django.db.models.signals import post_save,pre_save
 from django.dispatch import receiver
-from apps.charge.models.credit_request_model import CreditRequest
-from apps.charge.models.seller_profile_model import SellerProfile
 from django.db import transaction
-import logging
+
+from apps.charge.models.credit_request_model import CreditRequest
+
 from logging import getLogger
 logger = getLogger(__name__)
 
@@ -26,7 +26,7 @@ def after_credit_request_saved(sender, instance, **kwargs):
                     seller_profile.save()
                     logger.info(f"Updated inventory of SellerProfile ID: {seller_profile.id} to {seller_profile.inventory}")
                     instance.previously_used = True
-                    logging.info("The credit increase was executed successfully")
+                    logger.info("The credit increase was executed successfully")
                 
             except Exception as e:
                 logger.error(f"Credit increase encountered a problem for CreditRequest ID: {instance.id}. ERROR: {e}")
