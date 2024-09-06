@@ -13,7 +13,6 @@ from apps.charge.tests.factories import UserFactory, SellerProfileFactory, Phone
 
 class PhoneRechargeTestCase(TransactionTestCase):
     def setUp(self):
-        print("start setup")
         self.transaction_count = 1000
         self.charge_amount = 5
 
@@ -30,20 +29,7 @@ class PhoneRechargeTestCase(TransactionTestCase):
         self.phone1 = PhoneNumberFactory(phone_number="989035113419")
         self.phone2 = PhoneNumberFactory(phone_number="989119693978")
 
-        print("self.transaction_count: ", self.transaction_count)
-        print("self.charge_amount: ", self.charge_amount)
-        print("required_inventory: ", required_inventory)
-        print("self.seller1: ", self.seller1)
-        print("self.seller2: ", self.seller2)
-        print("self.phone1: ", self.phone1)
-        print("self.phone2: ", self.phone2)
-        print("1111111111111111111111111111")
-        print("Sellers: ", SellerProfile.objects.all())
-        time.sleep(200)
-
     def process_transactions(self, seller, phone, charge_amount, count):
-        print(f"run process transactions-----{seller}")
-        print(f"run process transactions----- count {count}")
         for i in range(count):
             print(f"Processing transaction {i+1}/{count} for seller {seller.id}")
             with transaction.atomic():
@@ -62,7 +48,6 @@ class PhoneRechargeTestCase(TransactionTestCase):
         self.process_transactions(self.seller2,self.phone2, self.charge_amount, self.transaction_count)
         
 
-        print("after with")
         self.seller1.refresh_from_db()
         self.seller2.refresh_from_db()
         self.phone1.refresh_from_db()
@@ -74,12 +59,7 @@ class PhoneRechargeTestCase(TransactionTestCase):
             (self.transaction_count * self.charge_amount)
         expected_inventory_phone1 = self.transaction_count * self.charge_amount
         expected_inventory_phone2 = self.transaction_count * self.charge_amount
-        print("self.seller1.inventory: ", self.seller1.inventory)
-        print("transaction_count: ", self.transaction_count)
-        print("charge_amount: ", self.charge_amount)
-        print("self.seller2.charge_amount: ", self.seller2.inventory)
-        print("expected_inventory_phone1: ", expected_inventory_phone1)
-        print("expected_inventory_phone2: ", expected_inventory_phone2)
+
         
         self.assertEqual(self.seller1.inventory, expected_inventory_seller1,
                          f"موجودی فروشنده 1 اشتباه است. موجودی فعلی: {self.seller1.inventory}")
@@ -89,7 +69,6 @@ class PhoneRechargeTestCase(TransactionTestCase):
                          f"موجودی شماره تلفن 1 اشتباه است. موجودی فعلی: {self.phone1.inventory}")
         self.assertEqual(self.phone2.inventory, expected_inventory_phone2,
                          f"موجودی شماره تلفن 2 اشتباه است. موجودی فعلی: {self.phone2.inventory}")
-        print("21111111111111111111")
         succeeded_transactions = Transaction.objects.filter(
             status=Transaction.SUCCEEDED).count()
         self.assertEqual(succeeded_transactions, self.transaction_count * 2,
